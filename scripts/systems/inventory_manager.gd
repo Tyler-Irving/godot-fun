@@ -15,20 +15,21 @@ signal selection_changed(slot_index: int)
 ## Emitted when any item count changes (mining, placing, crafting).
 signal inventory_changed(block_type: int, new_count: int)
 
-const SLOT_COUNT := 6
+const SLOT_COUNT := 7
 
 ## Currently selected hotbar slot (0-based index).
 var selected_slot: int = 0
 
 ## What block type each slot holds. -1 means empty.
 ## Block type IDs match the TileSet atlas columns in world.gd.
-var slot_block_types: Array[int] = [1, 2, 4, 5, 6, 7]
+var slot_block_types: Array[int] = [1, 2, 4, 5, 6, 7, 8]
 # Slot 0 = Dirt   (tile 1)
 # Slot 1 = Stone  (tile 2)
 # Slot 2 = Wood   (tile 4)
 # Slot 3 = Sand   (tile 5)
 # Slot 4 = Brick  (tile 6) — craftable
 # Slot 5 = Glass  (tile 7) — craftable
+# Slot 6 = Torch  (tile 8) — craftable
 
 ## Item counts: {block_type_id: count}. Missing keys = 0 items.
 var inventory: Dictionary = {}
@@ -41,6 +42,7 @@ var block_names := {
 	5: "Sand",
 	6: "Brick",
 	7: "Glass",
+	8: "Torch",
 }
 
 ## Colors for each block type, used by Hotbar and CraftingMenu.
@@ -51,6 +53,7 @@ var block_colors := {
 	5: Color(0.85, 0.78, 0.45),   # Sand
 	6: Color(0.70, 0.33, 0.22),   # Brick
 	7: Color(0.65, 0.85, 0.95),   # Glass
+	8: Color(0.95, 0.70, 0.20),   # Torch
 }
 
 

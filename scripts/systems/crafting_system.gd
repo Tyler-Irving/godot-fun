@@ -32,6 +32,12 @@ func _init() -> void:
 			"output_type": 7,
 			"output_count": 1,
 		},
+		{
+			"name": "Torch",
+			"inputs": {4: 1, 1: 1},      # 1 Wood + 1 Dirt
+			"output_type": 8,
+			"output_count": 2,
+		},
 	]
 
 

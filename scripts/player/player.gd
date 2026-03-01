@@ -37,6 +37,7 @@ var mining_times := {
 	5: 0.3,   # Sand   — easy to break
 	6: 1.0,   # Brick  — hard, slow to mine
 	7: 0.2,   # Glass  — fragile, very fast
+	8: 0.2,   # Torch  — instant pickup
 }
 
 

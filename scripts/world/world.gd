@@ -27,7 +27,8 @@ const TILE_WOOD := 4
 const TILE_SAND := 5
 const TILE_BRICK := 6
 const TILE_GLASS := 7
-const NUM_TILE_TYPES := 8
+const TILE_TORCH := 8
+const NUM_TILE_TYPES := 9
 
 ## Reference to the TileMapLayer child node where we paint terrain.
 @onready var terrain_layer: TileMapLayer = $TerrainLayer
@@ -41,6 +42,9 @@ var cursor_sprite: Sprite2D
 var mining_overlay: Sprite2D
 var mining_bar_bg: Sprite2D
 var mining_bar_fill: Sprite2D
+
+## Active torch lights: key = Vector2i grid pos, value = PointLight2D node
+var torch_lights: Dictionary = {}
 
 
 func _ready() -> void:
@@ -72,6 +76,7 @@ func _setup_tileset() -> void:
 		Color(0.85, 0.78, 0.45),   # 5 Sand  — sandy yellow
 		Color(0.70, 0.33, 0.22),   # 6 Brick — reddish brown
 		Color(0.65, 0.85, 0.95),   # 7 Glass — light cyan
+		Color(0.95, 0.70, 0.20),   # 8 Torch — warm orange-yellow
 	]
 
 	for tile_index in range(NUM_TILE_TYPES):
@@ -238,13 +243,59 @@ func set_tile(grid_pos: Vector2i, tile_type: int) -> void:
 		return
 	if grid_pos.y < 0 or grid_pos.y >= WORLD_HEIGHT:
 		return
+	# Remove old torch light if overwriting a torch
+	_remove_torch_light(grid_pos)
 	world_data[grid_pos.x][grid_pos.y] = tile_type
 	terrain_layer.set_cell(grid_pos, 0, Vector2i(tile_type, 0))
+	# Add torch light if placing a torch
+	if tile_type == TILE_TORCH:
+		_add_torch_light(grid_pos)
 
 
 func clear_tile(grid_pos: Vector2i) -> void:
 	## "Mine" a tile — revert it to grass.
 	set_tile(grid_pos, TILE_GRASS)
+
+
+# --- Torch Lights ---
+
+func _add_torch_light(grid_pos: Vector2i) -> void:
+	## Spawn a PointLight2D at the center of a torch tile.
+	var light := PointLight2D.new()
+	light.position = Vector2(
+		grid_pos.x * TILE_SIZE + TILE_SIZE / 2,
+		grid_pos.y * TILE_SIZE + TILE_SIZE / 2
+	)
+	light.energy = 1.2
+	light.texture = _create_light_texture()
+	light.texture_scale = 4.0
+	light.color = Color(1.0, 0.85, 0.5)  # Warm firelight
+	add_child(light)
+	torch_lights[grid_pos] = light
+
+
+func _remove_torch_light(grid_pos: Vector2i) -> void:
+	if torch_lights.has(grid_pos):
+		torch_lights[grid_pos].queue_free()
+		torch_lights.erase(grid_pos)
+
+
+func _create_light_texture() -> ImageTexture:
+	## Create a radial gradient texture for the torch's PointLight2D.
+	## PointLight2D requires a texture — it samples the texture's brightness
+	## to determine the light's falloff shape.
+	var size := 128
+	var img := Image.create(size, size, false, Image.FORMAT_RGBA8)
+	var center := Vector2(size / 2.0, size / 2.0)
+	var radius := size / 2.0
+	for x in range(size):
+		for y in range(size):
+			var dist := Vector2(x, y).distance_to(center)
+			var intensity := clampf(1.0 - dist / radius, 0.0, 1.0)
+			# Quadratic falloff for softer edges
+			intensity *= intensity
+			img.set_pixel(x, y, Color(intensity, intensity, intensity, 1.0))
+	return ImageTexture.create_from_image(img)
 
 
 # --- Query API ---

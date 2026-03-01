@@ -1,18 +1,26 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/world.tscn" id="1_world"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
 [ext_resource type="Script" path="res://scripts/main.gd" id="3_main"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hotbar.tscn" id="4_hotbar"]
 [ext_resource type="PackedScene" path="res://scenes/ui/crafting_menu.tscn" id="5_crafting"]
+[ext_resource type="Script" path="res://scripts/systems/day_night_cycle.gd" id="6_daynight"]
+[ext_resource type="Script" path="res://scripts/systems/ambient_sound.gd" id="7_ambient"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("3_main")
 
 [node name="World" parent="." instance=ExtResource("1_world")]
 
+[node name="DayNightCycle" type="CanvasModulate" parent="."]
+script = ExtResource("6_daynight")
+
 [node name="Player" parent="." instance=ExtResource("2_player")]
 position = Vector2(1040, 1040)
+
+[node name="AmbientSound" type="AudioStreamPlayer" parent="."]
+script = ExtResource("7_ambient")
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 
