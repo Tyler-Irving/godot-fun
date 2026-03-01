@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/world.tscn" id="1_world"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
 [ext_resource type="Script" path="res://scripts/main.gd" id="3_main"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hotbar.tscn" id="4_hotbar"]
+[ext_resource type="PackedScene" path="res://scenes/ui/crafting_menu.tscn" id="5_crafting"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("3_main")
@@ -16,3 +17,5 @@ position = Vector2(1040, 1040)
 [node name="UILayer" type="CanvasLayer" parent="."]
 
 [node name="Hotbar" parent="UILayer" instance=ExtResource("4_hotbar")]
+
+[node name="CraftingMenu" parent="UILayer" instance=ExtResource("5_crafting")]

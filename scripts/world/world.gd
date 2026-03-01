@@ -25,7 +25,9 @@ const TILE_STONE := 2
 const TILE_WATER := 3
 const TILE_WOOD := 4
 const TILE_SAND := 5
-const NUM_TILE_TYPES := 6
+const TILE_BRICK := 6
+const TILE_GLASS := 7
+const NUM_TILE_TYPES := 8
 
 ## Reference to the TileMapLayer child node where we paint terrain.
 @onready var terrain_layer: TileMapLayer = $TerrainLayer
@@ -68,6 +70,8 @@ func _setup_tileset() -> void:
 		Color(0.20, 0.40, 0.80),   # 3 Water — deep blue
 		Color(0.65, 0.50, 0.30),   # 4 Wood  — tan/light brown
 		Color(0.85, 0.78, 0.45),   # 5 Sand  — sandy yellow
+		Color(0.70, 0.33, 0.22),   # 6 Brick — reddish brown
+		Color(0.65, 0.85, 0.95),   # 7 Glass — light cyan
 	]
 
 	for tile_index in range(NUM_TILE_TYPES):

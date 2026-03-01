@@ -35,6 +35,8 @@ var mining_times := {
 	2: 0.8,   # Stone  — hard, slow to mine
 	4: 0.3,   # Wood   — easy to break
 	5: 0.3,   # Sand   — easy to break
+	6: 1.0,   # Brick  — hard, slow to mine
+	7: 0.2,   # Glass  — fragile, very fast
 }
 
 
@@ -126,6 +128,11 @@ func _try_place_block() -> void:
 	if block_type < 0:
 		return  # Empty hotbar slot selected
 
+	# Check that the player actually has this block in inventory
+	if not InventoryManager.has_item(block_type):
+		return
+
+	InventoryManager.remove_item(block_type)
 	world.set_tile(grid_pos, block_type)
 
 
@@ -153,8 +160,9 @@ func _handle_mining(delta: float) -> void:
 			var progress_pct := mining_progress / mining_duration
 			world.show_mining_progress(grid_pos, progress_pct)
 
-			# Mining complete — destroy the block
+			# Mining complete — destroy the block and collect it
 			if mining_progress >= mining_duration:
+				InventoryManager.add_item(tile_type)
 				world.clear_tile(grid_pos)
 				_reset_mining()
 			return
