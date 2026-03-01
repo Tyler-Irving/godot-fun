@@ -11,14 +11,19 @@ extends Control
 ##   We use this so the 'C' key doesn't trigger other actions while toggling.
 ## - Button.pressed signal: Emitted when a button is clicked. We connect it
 ##   to a crafting callback using a Callable with bind() to pass the recipe index.
+## - preload(): Loads a script/scene at compile time. More reliable than
+##   class_name for cross-script references since it doesn't depend on
+##   Godot's global class scanning order.
 
-var crafting_system: CraftingSystem
+const CraftingSystemScript = preload("res://scripts/systems/crafting_system.gd")
+
+var crafting_system
 var craft_buttons: Array[Button] = []
 var ingredient_labels: Array[Label] = []
 
 
 func _ready() -> void:
-	crafting_system = CraftingSystem.new()
+	crafting_system = CraftingSystemScript.new()
 	visible = false
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_build_ui()
@@ -160,7 +165,7 @@ func _refresh_display() -> void:
 
 		ingredient_labels[i].text = ", ".join(parts)
 
-		var can_do := crafting_system.can_craft(i)
+		var can_do = crafting_system.can_craft(i)
 		craft_buttons[i].disabled = not can_do
 		ingredient_labels[i].add_theme_color_override(
 			"font_color",
